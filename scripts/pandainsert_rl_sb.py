@@ -68,14 +68,6 @@ elif learn_eval == 1:
         model = PPO.load(model_path, env=env)
     elif algo == 'dqn':
         model = DQN.load(model_path, env=env)
-    # Evaluate the agent
-    # NOTE: If you use wrappers with your environment that modify rewards,
-    #       this will be reflected here. To evaluate with original rewards,
-    #       wrap environment in a "Monitor" wrapper before other wrappers.
-    # mean_reward, std_reward = evaluate_policy(
-    #     model, model.get_env().envs, n_eval_episodes=10, render=True
-    # )
-    # print(f'mean_reward={mean_reward} +/- {std_reward}')
     env = env.env
     episodes = 5
     for episode in range(1, episodes+1):
