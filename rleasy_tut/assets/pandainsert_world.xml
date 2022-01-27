@@ -1,0 +1,338 @@
+<mujoco model="base">
+  <statistic extent="2" meansize=".05" />
+  <compiler angle="radian" coordinate="local" eulerseq="XYZ" />
+  <option cone="elliptic" impratio="1" iterations="50" jacobian="sparse" noslip_iterations="1" solver="Newton" timestep="0.002" tolerance="1e-10" />
+  <size nconmax="5000" njmax="5000" />
+
+  <asset>
+    <texture builtin="gradient" height="512" rgb1="0.3 0.5 0.7" rgb2="0 0 0" type="skybox" width="512" />
+    <texture builtin="checker" height="512" mark="cross" markrgb=".8 .8 .8" name="texplane" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" type="2d" width="512" />
+    <material name="matplane" reflectance="0.3" texrepeat="1 1" texture="texplane" texuniform="true" />
+    <mesh name="link0" file="panda/meshes/link0.stl" />
+    <mesh name="link1" file="panda/meshes/link1.stl" />
+    <mesh name="link2" file="panda/meshes/link2.stl" />
+    <mesh name="link3" file="panda/meshes/link3.stl" />
+    <mesh name="link4" file="panda/meshes/link4.stl" />
+    <mesh name="link5" file="panda/meshes/link5.stl" />
+    <mesh name="link6" file="panda/meshes/link6.stl" />
+    <mesh name="link7" file="panda/meshes/link7.stl" />
+    <mesh name="link0_vis" file="panda/meshes/link0_vis.stl" />
+    <mesh name="link1_vis" file="panda/meshes/link1_vis.stl" />
+    <mesh name="link2_vis" file="panda/meshes/link2_vis.stl" />
+    <mesh name="link3_vis" file="panda/meshes/link3_vis.stl" />
+    <mesh name="link4_vis" file="panda/meshes/link4_vis.stl" />
+    <mesh name="link5_vis" file="panda/meshes/link5_vis.stl" />
+    <mesh name="link6_vis" file="panda/meshes/link6_vis.stl" />
+    <mesh name="link7_vis" file="panda/meshes/link7_vis.stl" />
+    <mesh name="prism" vertex="0.0175 0.00055 0.0000  0.0175 0.00055 0.0200  0.11750 0.00055 0.00000  0.11750 0.00055 0.02000  0.11730 0.00683 0.00000  0.11730 0.00683 0.02000"/>
+  </asset>
+
+  <visual>
+    <rgba haze="0.15 0.25 0.35 1" />
+    <quality shadowsize="2048" />
+    <map fogend="15" fogstart="10" haze="0.3" shadowscale="0.5" stiffness="700" zfar="40" znear="0.001" />
+  </visual>
+
+  <actuator>
+    <motor ctrllimited="true" ctrlrange="-80.0 80.0" joint="joint1" name="torq_j1" />
+    <motor ctrllimited="true" ctrlrange="-80.0 80.0" joint="joint2" name="torq_j2" />
+    <motor ctrllimited="true" ctrlrange="-80.0 80.0" joint="joint3" name="torq_j3" />
+    <motor ctrllimited="true" ctrlrange="-80.0 80.0" joint="joint4" name="torq_j4" />
+    <motor ctrllimited="true" ctrlrange="-80.0 80.0" joint="joint5" name="torq_j5" />
+    <motor ctrllimited="true" ctrlrange="-12.0 12.0" joint="joint6" name="torq_j6" />
+    <motor ctrllimited="true" ctrlrange="-12.0 12.0" joint="joint7" name="torq_j7" />
+  </actuator>
+
+  <worldbody>
+    <camera mode="track" pos="1 0 1" quat="0.5 .5 .5 .5" />
+    <geom condim="3" material="matplane" name="floor" pos="0 0 0" size="3 3 .125" type="plane" />
+    <light castshadow="false" diffuse=".4 .4 .4" dir="0 0 -1" directional="true" pos="0 0 5.0" specular="0.1 0.1 0.1" />
+    <light diffuse=".6 .6 .6" dir="0 0 -1" directional="true" pos="0 0 4" specular="0.2 0.2 0.2" />
+    
+    <body name="base" pos="0 0 0">
+      <!-- robot view -->
+      <camera mode="fixed" name="robotview" pos="1.0 0 0.4" quat="0.653 0.271 0.271 0.653" />
+      <inertial diaginertia="0 0 0" mass="0" pos="0 0 0" />
+      <!-- links -->
+      <body name="link0" pos="0 0 0">
+        <geom conaffinity="0" contype="0" group="1" mesh="link0_vis" name="link0_visual" rgba="1 1 1 1" type="mesh" />
+        <geom group="0" mesh="link0" name="link0_collision" type="mesh" />
+
+        <body name="link1" pos="0 0 0.333">
+          <inertial fullinertia="0.70337 0.70661 0.009117 -0.000139 0.006772 0.019169" mass="4.97" pos="0.003875 0.002081 0.05" />
+          <joint axis="0 0 1" damping="0.1" limited="true" name="joint1" pos="0 0 0" range="-2.8973 2.8973" />
+          <geom conaffinity="0" contype="0" group="1" mesh="link1_vis" name="link1_visual" rgba="1 1 1 1" type="mesh" />
+          <geom group="0" mesh="link1" name="link1_collision" type="mesh" />
+
+          <body name="link2" pos="0 0 0" quat="0.707107 -0.707107 0 0">
+            <inertial fullinertia="7.9620e-03 2.8110e-02 2.5995e-02 -3.9250e-03 1.0254e-02 7.0400e-04" mass="0.647" pos="-0.003141 0.02872 0.003495" />
+            <joint axis="0 0 1" damping="0.1" limited="true" name="joint2" pos="0 0 0" range="-1.7628 1.7628" />
+            <geom conaffinity="0" contype="0" group="1" mesh="link2_vis" name="link2_visual" rgba="1 1 1 1" type="mesh" />
+            <geom group="0" mesh="link2" name="link2_collision" type="mesh" />
+
+            <body name="link3" pos="0 -0.316 0" quat="0.707107 0.707107 0 0">
+              <inertial fullinertia="3.7242e-02 3.6155e-02 1.0830e-02 -4.7610e-03 -1.1396e-02 -1.2805e-02" mass="3.228604" pos="2.7518e-02 3.9252e-02 -6.6502e-02" />
+              <joint axis="0 0 1" damping="0.1" limited="true" name="joint3" pos="0 0 0" range="-2.8973 2.8973" />
+              <geom conaffinity="0" contype="0" group="1" mesh="link3_vis" name="link3_visual" rgba="1 1 1 1" type="mesh" />
+              <geom group="0" mesh="link3" name="link3_collision" type="mesh" />
+
+              <body name="link4" pos="0.0825 0 0" quat="0.707107 0.707107 0 0">
+                <inertial fullinertia="2.5853e-02 1.9552e-02 2.8323e-02 7.7960e-03 -1.3320e-03 8.6410e-03" mass="3.587895" pos="-5.317e-02 1.04419e-01 2.7454e-02" />
+                <joint axis="0 0 1" damping="0.1" limited="true" name="joint4" pos="0 0 0" range="-3.0718 -0.0698" />
+                <geom conaffinity="0" contype="0" group="1" mesh="link4_vis" name="link4_visual" rgba="1 1 1 1" type="mesh" />
+                <geom group="0" mesh="link4" name="link4_collision" type="mesh" />
+
+                <body name="link5" pos="-0.0825 0.384 0" quat="0.707107 -0.707107 0 0">
+                  <inertial fullinertia="3.5549e-02 2.9474e-02 8.6270e-03 -2.1170e-03 -4.0370e-03 2.2900e-04" mass="1.225946" pos="-1.1953e-02 4.1065e-02 -3.8437e-02" />
+                  <joint axis="0 0 1" damping="0.1" limited="true" name="joint5" pos="0 0 0" range="-2.8973 2.8973" />
+                  <geom conaffinity="0" contype="0" group="1" mesh="link5_vis" name="link5_visual" rgba="1 1 1 1" type="mesh" />
+                  <geom group="0" mesh="link5" name="link5_collision" type="mesh" />
+
+                  <body name="link6" pos="0 0 0" quat="0.707107 0.707107 0 0">
+                    <inertial fullinertia="1.9640e-03 4.3540e-03 5.4330e-03 1.0900e-04 -1.1580e-03 3.4100e-04" mass="1.666555" pos="6.0149e-02 -1.4117e-02 -1.0517e-02" />
+                    <joint axis="0 0 1" damping="0.01" limited="true" name="joint6" pos="0 0 0" range="-0.0175 3.7525" />
+                    <geom conaffinity="0" contype="0" group="1" mesh="link6_vis" name="link6_visual" rgba="1 1 1 1" type="mesh" />
+                    <geom group="0" mesh="link6" name="link6_collision" type="mesh" />
+
+                    <body name="link7" pos="0.088 0 0" quat="0.707107 0.707107 0 0">
+                      <inertial fullinertia="1.2516e-02 1.0027e-02 4.8150e-03 -4.2800e-04 -1.1960e-03 -7.4100e-04" mass="7.35522e-01" pos="1.0517e-02 -4.252e-03 6.1597e-02" />
+                      <joint axis="0 0 1" damping="0.01" limited="true" name="joint7" pos="0 0 0" range="-2.8973 2.8973" />
+                      <geom conaffinity="0" contype="0" group="1" mesh="link7_vis" name="link7_visual" rgba="1. 1. 1. 1." type="mesh" />
+                      <geom group="0" mesh="link7" name="link7_collision" type="mesh" />
+                      
+                      <body name="right_hand" pos="0 0 0.107" quat="0.924 0 0 -0.383">
+                        <inertial diaginertia="0.05 0.05 0.05" mass="0.5" pos="0 0 0" />
+
+                        <camera fovy="75" mode="fixed" name="eye_in_hand" pos="0.05 0 0" quat="0 0.707108 0.707108 0" />
+                        
+                        <body name="cylinder1" pos="0.0 0.0 0.101">
+                          <geom euler="0 0 0" friction="0.05 0.05 0.001" group="1" mass="0.6790" pos="0 0 0" priority="1" size="0.017490 0.03" solimp="0.9 0.95 0.001 0.5 2" solref="0.02 1" type="cylinder" />
+                          <site name="cyl_bottom_site" pos="0 0 -0.03" rgba="0 0 0 0" size="0.001" />
+                          <site name="cyl_top_site" pos="0 0 0.03" rgba="0 0 0 0" size="0.001" />
+                        </body>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    <body name="marker" pos="0.53 0.08 0.13">
+      <geom type="box" size="0.003 0.003 0.003" conaffinity="0" contype="0" rgba="0.9 0.9 0.1 1"/>
+    </body>
+
+    <body name="hole" pos="0.53 0.08 0.13">
+      <geom name="base" type="box" mass="0.00990" pos="0 0 -0.01" size="0.08555 0.08555 0.01" group="1"/>
+      <geom type="box" pos="0.06750 0.00000 0.01000" euler="0 0 0.000" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" group="1"/>
+      <geom type="box" pos="0.06737 0.00424 0.01000" euler="0 0 0.063" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.06283" group="1"/>
+      <geom type="box" pos="0.06697 0.00846 0.01000" euler="0 0 0.126" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.12566" group="1"/>
+      <geom type="box" pos="0.06630 0.01265 0.01000" euler="0 0 0.188" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.18850" group="1"/>
+      <geom type="box" pos="0.06538 0.01679 0.01000" euler="0 0 0.251" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.25133" group="1"/>
+      <geom type="box" pos="0.06420 0.02086 0.01000" euler="0 0 0.314" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.31416" group="1"/>
+      <geom type="box" pos="0.06276 0.02485 0.01000" euler="0 0 0.377" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.37699" group="1"/>
+      <geom type="box" pos="0.06108 0.02874 0.01000" euler="0 0 0.440" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.43982" group="1"/>
+      <geom type="box" pos="0.05915 0.03252 0.01000" euler="0 0 0.503" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.50265" group="1"/>
+      <geom type="box" pos="0.05699 0.03617 0.01000" euler="0 0 0.565" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.56549" group="1"/>
+      <geom type="box" pos="0.05461 0.03968 0.01000" euler="0 0 0.628" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.62832" group="1"/>
+      <geom type="box" pos="0.05201 0.04303 0.01000" euler="0 0 0.691" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.69115" group="1"/>
+      <geom type="box" pos="0.04921 0.04621 0.01000" euler="0 0 0.754" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.75398" group="1"/>
+      <geom type="box" pos="0.04621 0.04921 0.01000" euler="0 0 0.817" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.81681" group="1"/>
+      <geom type="box" pos="0.04303 0.05201 0.01000" euler="0 0 0.880" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.87965" group="1"/>
+      <geom type="box" pos="0.03968 0.05461 0.01000" euler="0 0 0.942" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 0.94248" group="1"/>
+      <geom type="box" pos="0.03617 0.05699 0.01000" euler="0 0 1.005" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.00531" group="1"/>
+      <geom type="box" pos="0.03252 0.05915 0.01000" euler="0 0 1.068" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.06814" group="1"/>
+      <geom type="box" pos="0.02874 0.06108 0.01000" euler="0 0 1.131" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.13097" group="1"/>
+      <geom type="box" pos="0.02485 0.06276 0.01000" euler="0 0 1.194" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.19381" group="1"/>
+      <geom type="box" pos="0.02086 0.06420 0.01000" euler="0 0 1.257" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.25664" group="1"/>
+      <geom type="box" pos="0.01679 0.06538 0.01000" euler="0 0 1.319" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.31947" group="1"/>
+      <geom type="box" pos="0.01265 0.06630 0.01000" euler="0 0 1.382" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.38230" group="1"/>
+      <geom type="box" pos="0.00846 0.06697 0.01000" euler="0 0 1.445" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.44513" group="1"/>
+      <geom type="box" pos="0.00424 0.06737 0.01000" euler="0 0 1.508" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.50796" group="1"/>
+      <geom type="box" pos="-0.00000 0.06750 0.01000" euler="0 0 1.571" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.57080" group="1"/>
+      <geom type="box" pos="-0.00424 0.06737 0.01000" euler="0 0 1.634" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.63363" group="1"/>
+      <geom type="box" pos="-0.00846 0.06697 0.01000" euler="0 0 1.696" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.69646" group="1"/>
+      <geom type="box" pos="-0.01265 0.06630 0.01000" euler="0 0 1.759" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.75929" group="1"/>
+      <geom type="box" pos="-0.01679 0.06538 0.01000" euler="0 0 1.822" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.82212" group="1"/>
+      <geom type="box" pos="-0.02086 0.06420 0.01000" euler="0 0 1.885" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.88496" group="1"/>
+      <geom type="box" pos="-0.02485 0.06276 0.01000" euler="0 0 1.948" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 1.94779" group="1"/>
+      <geom type="box" pos="-0.02874 0.06108 0.01000" euler="0 0 2.011" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.01062" group="1"/>
+      <geom type="box" pos="-0.03252 0.05915 0.01000" euler="0 0 2.073" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.07345" group="1"/>
+      <geom type="box" pos="-0.03617 0.05699 0.01000" euler="0 0 2.136" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.13628" group="1"/>
+      <geom type="box" pos="-0.03968 0.05461 0.01000" euler="0 0 2.199" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.19911" group="1"/>
+      <geom type="box" pos="-0.04303 0.05201 0.01000" euler="0 0 2.262" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.26195" group="1"/>
+      <geom type="box" pos="-0.04621 0.04921 0.01000" euler="0 0 2.325" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.32478" group="1"/>
+      <geom type="box" pos="-0.04921 0.04621 0.01000" euler="0 0 2.388" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.38761" group="1"/>
+      <geom type="box" pos="-0.05201 0.04303 0.01000" euler="0 0 2.450" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.45044" group="1"/>
+      <geom type="box" pos="-0.05461 0.03968 0.01000" euler="0 0 2.513" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.51327" group="1"/>
+      <geom type="box" pos="-0.05699 0.03617 0.01000" euler="0 0 2.576" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.57611" group="1"/>
+      <geom type="box" pos="-0.05915 0.03252 0.01000" euler="0 0 2.639" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.63894" group="1"/>
+      <geom type="box" pos="-0.06108 0.02874 0.01000" euler="0 0 2.702" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.70177" group="1"/>
+      <geom type="box" pos="-0.06276 0.02485 0.01000" euler="0 0 2.765" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.76460" group="1"/>
+      <geom type="box" pos="-0.06420 0.02086 0.01000" euler="0 0 2.827" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.82743" group="1"/>
+      <geom type="box" pos="-0.06538 0.01679 0.01000" euler="0 0 2.890" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.89027" group="1"/>
+      <geom type="box" pos="-0.06630 0.01265 0.01000" euler="0 0 2.953" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 2.95310" group="1"/>
+      <geom type="box" pos="-0.06697 0.00846 0.01000" euler="0 0 3.016" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.01593" group="1"/>
+      <geom type="box" pos="-0.06737 0.00424 0.01000" euler="0 0 3.079" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.07876" group="1"/>
+      <geom type="box" pos="-0.06750 -0.00000 0.01000" euler="0 0 3.142" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.14159" group="1"/>
+      <geom type="box" pos="-0.06737 -0.00424 0.01000" euler="0 0 3.204" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.20442" group="1"/>
+      <geom type="box" pos="-0.06697 -0.00846 0.01000" euler="0 0 3.267" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.26726" group="1"/>
+      <geom type="box" pos="-0.06630 -0.01265 0.01000" euler="0 0 3.330" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.33009" group="1"/>
+      <geom type="box" pos="-0.06538 -0.01679 0.01000" euler="0 0 3.393" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.39292" group="1"/>
+      <geom type="box" pos="-0.06420 -0.02086 0.01000" euler="0 0 3.456" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.45575" group="1"/>
+      <geom type="box" pos="-0.06276 -0.02485 0.01000" euler="0 0 3.519" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.51858" group="1"/>
+      <geom type="box" pos="-0.06108 -0.02874 0.01000" euler="0 0 3.581" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.58142" group="1"/>
+      <geom type="box" pos="-0.05915 -0.03252 0.01000" euler="0 0 3.644" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.64425" group="1"/>
+      <geom type="box" pos="-0.05699 -0.03617 0.01000" euler="0 0 3.707" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.70708" group="1"/>
+      <geom type="box" pos="-0.05461 -0.03968 0.01000" euler="0 0 3.770" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.76991" group="1"/>
+      <geom type="box" pos="-0.05201 -0.04303 0.01000" euler="0 0 3.833" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.83274" group="1"/>
+      <geom type="box" pos="-0.04921 -0.04621 0.01000" euler="0 0 3.896" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.89557" group="1"/>
+      <geom type="box" pos="-0.04621 -0.04921 0.01000" euler="0 0 3.958" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 3.95841" group="1"/>
+      <geom type="box" pos="-0.04303 -0.05201 0.01000" euler="0 0 4.021" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.02124" group="1"/>
+      <geom type="box" pos="-0.03968 -0.05461 0.01000" euler="0 0 4.084" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.08407" group="1"/>
+      <geom type="box" pos="-0.03617 -0.05699 0.01000" euler="0 0 4.147" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.14690" group="1"/>
+      <geom type="box" pos="-0.03252 -0.05915 0.01000" euler="0 0 4.210" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.20973" group="1"/>
+      <geom type="box" pos="-0.02874 -0.06108 0.01000" euler="0 0 4.273" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.27257" group="1"/>
+      <geom type="box" pos="-0.02485 -0.06276 0.01000" euler="0 0 4.335" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.33540" group="1"/>
+      <geom type="box" pos="-0.02086 -0.06420 0.01000" euler="0 0 4.398" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.39823" group="1"/>
+      <geom type="box" pos="-0.01679 -0.06538 0.01000" euler="0 0 4.461" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.46106" group="1"/>
+      <geom type="box" pos="-0.01265 -0.06630 0.01000" euler="0 0 4.524" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.52389" group="1"/>
+      <geom type="box" pos="-0.00846 -0.06697 0.01000" euler="0 0 4.587" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.58673" group="1"/>
+      <geom type="box" pos="-0.00424 -0.06737 0.01000" euler="0 0 4.650" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.64956" group="1"/>
+      <geom type="box" pos="-0.00000 -0.06750 0.01000" euler="0 0 4.712" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.71239" group="1"/>
+      <geom type="box" pos="0.00424 -0.06737 0.01000" euler="0 0 4.775" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.77522" group="1"/>
+      <geom type="box" pos="0.00846 -0.06697 0.01000" euler="0 0 4.838" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.83805" group="1"/>
+      <geom type="box" pos="0.01265 -0.06630 0.01000" euler="0 0 4.901" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.90088" group="1"/>
+      <geom type="box" pos="0.01679 -0.06538 0.01000" euler="0 0 4.964" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 4.96372" group="1"/>
+      <geom type="box" pos="0.02086 -0.06420 0.01000" euler="0 0 5.027" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.02655" group="1"/>
+      <geom type="box" pos="0.02485 -0.06276 0.01000" euler="0 0 5.089" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.08938" group="1"/>
+      <geom type="box" pos="0.02874 -0.06108 0.01000" euler="0 0 5.152" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.15221" group="1"/>
+      <geom type="box" pos="0.03252 -0.05915 0.01000" euler="0 0 5.215" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.21504" group="1"/>
+      <geom type="box" pos="0.03617 -0.05699 0.01000" euler="0 0 5.278" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.27788" group="1"/>
+      <geom type="box" pos="0.03968 -0.05461 0.01000" euler="0 0 5.341" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.34071" group="1"/>
+      <geom type="box" pos="0.04303 -0.05201 0.01000" euler="0 0 5.404" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.40354" group="1"/>
+      <geom type="box" pos="0.04621 -0.04921 0.01000" euler="0 0 5.466" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.46637" group="1"/>
+      <geom type="box" pos="0.04921 -0.04621 0.01000" euler="0 0 5.529" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.52920" group="1"/>
+      <geom type="box" pos="0.05201 -0.04303 0.01000" euler="0 0 5.592" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.59203" group="1"/>
+      <geom type="box" pos="0.05461 -0.03968 0.01000" euler="0 0 5.655" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.65487" group="1"/>
+      <geom type="box" pos="0.05699 -0.03617 0.01000" euler="0 0 5.718" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.71770" group="1"/>
+      <geom type="box" pos="0.05915 -0.03252 0.01000" euler="0 0 5.781" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.78053" group="1"/>
+      <geom type="box" pos="0.06108 -0.02874 0.01000" euler="0 0 5.843" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.84336" group="1"/>
+      <geom type="box" pos="0.06276 -0.02485 0.01000" euler="0 0 5.906" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.90619" group="1"/>
+      <geom type="box" pos="0.06420 -0.02086 0.01000" euler="0 0 5.969" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 5.96903" group="1"/>
+      <geom type="box" pos="0.06538 -0.01679 0.01000" euler="0 0 6.032" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 6.03186" group="1"/>
+      <geom type="box" pos="0.06630 -0.01265 0.01000" euler="0 0 6.095" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 6.09469" group="1"/>
+      <geom type="box" pos="0.06697 -0.00846 0.01000" euler="0 0 6.158" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 6.15752" group="1"/>
+      <geom type="box" pos="0.06737 -0.00424 0.01000" euler="0 0 6.220" mass="0.0099" size="0.05000 0.00055 0.01000" group="1"/>
+      <geom type="mesh" mesh="prism" euler="0 0 6.22035" group="1"/>
+      <site rgba="0 0 0 0" size="0.001" pos="0 0 -0.0200" name="hole_bottom_site"/>
+      <site rgba="0 0 0 0" size="0.001" pos="0 0 0.0200" name="hole_top_site"/>
+      <site rgba="0 0 0 0" size="0.001" pos="0.0675 0.0675 0" name="hole_horizontal_radius_site" />
+      <site rgba="0 0 0 0" size="0.001" pos="0 0 0" name="hole_end_site" />
+    </body>
+    
+  </worldbody>
+</mujoco>
+
