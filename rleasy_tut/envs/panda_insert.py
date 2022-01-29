@@ -195,7 +195,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
     def render(self):
         self.viewer.render()
 
-    def reward(self, ):
+    def reward(self):
         rew = 0
         # rew for distance and rounding
         self.dist_to_goal = self.observations["eef_pose_hf"][:3].copy()            

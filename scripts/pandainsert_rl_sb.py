@@ -23,7 +23,7 @@ elif arg_input[0] == 'check':
 
 algo = 'ppo'    # ppo or dqn
 
-env_name = "PandaInsert-v0" # "CartPole-v1"
+env_name = "PandaInsert-v1" # "CartPole-v1"
 env_name_full = "rleasy_tut:" + env_name
 time_steps_str = "1e5"
 time_steps_int = int(float(time_steps_str))

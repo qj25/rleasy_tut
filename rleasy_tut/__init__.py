@@ -3,7 +3,7 @@ from gym.envs.registration import (
 )
 
 register(
-    id="PandaInsert-v0",
+    id="PandaInsert-v1",
     entry_point="rleasy_tut.envs:PandaInsertEnv",
     max_episode_steps=1000,
 )

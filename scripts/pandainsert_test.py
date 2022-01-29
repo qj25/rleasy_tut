@@ -7,7 +7,7 @@ from rleasy_tut.envs.panda_insert import PandaInsertEnv
 
 def test_move():
     # env = PandaInsertEnv(do_render=True)
-    env = gym.make("rleasy_tut:PandaInsert-v0")
+    env = gym.make("rleasy_tut:PandaInsert-v1")
     
     env.env.do_render = True
     phase = 1
@@ -48,7 +48,7 @@ def test_move():
             else:
                 move_step = 1
         elif phase == 1:
-            move_step = 0
+            move_step = 4
         obs, rew, done, info = env.step(move_step)
         rob_pos = info['rob_pos']
         if step_counter == 30:
@@ -65,7 +65,7 @@ def test_move():
                 # print(f"dist_to_goal = {info['dist_norm']}")
                 # print(f"reward = {rew}")
                 # print(f"dtg_xyz = {info['dtg_xyz']}")
-                # print(f"move_step = {move_step}")
+                print(f"move_step = {move_step}")
                 print(f"rob_pos = {rob_pos}")
                 # print(f"obs.type = {type(env.observation_space)}")
                 # print(f"qpos = {env.observations['qpos']}")

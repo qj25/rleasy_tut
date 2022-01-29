@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='rl_tut',
+setup(name='rleasy_tut',
       version='0.0.1',
       # packages=[
       #       package for package in find_packages() if package.startswith("rl_tut")
