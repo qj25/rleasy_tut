@@ -80,7 +80,13 @@ class HPFController:
         # quat
         self._q0 = self._qd
         eef_quat = self._state['eef_quat']
-        action_ori = T.axisangle2quat(np.concatenate((action[3:], [0])))
+        concat_axisangle = np.concatenate((
+            [action[3]], [0]
+        ))
+        concat_axisangle = np.concatenate((
+            concat_axisangle, [action[4]]
+        ))
+        action_ori = T.axisangle2quat(concat_axisangle)
         ori_action = T.quat_error(eef_quat, action_ori)
         # ori_action = np.concatenate((action[3:], [0]))
         scaled_ori_a = self.scale_action(ori_action, out_max=0.015)

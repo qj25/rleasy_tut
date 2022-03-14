@@ -2,6 +2,7 @@ import mujoco_py
 import matplotlib.pyplot as plt
 import numpy as np
 import gym
+import random
 
 from rleasy_tut.envs.panda_insert import PandaInsertEnv
 
@@ -33,6 +34,8 @@ def test_move():
     force_z = []
     dtg_z = []
     reward = []
+    score = 0
+    rand_move = random.randint(0,4)
 
     print("Moving...")
     while not done:
@@ -48,9 +51,10 @@ def test_move():
             else:
                 move_step = 1
         elif phase == 1:
-            move_step = 4
+            move_step = rand_move # random.randint(0,4)
         obs, rew, done, info = env.step(move_step)
         rob_pos = info['rob_pos']
+        score += rew
         if step_counter == 30:
             pass
         if step_counter % 3 == 0:
@@ -80,7 +84,8 @@ def test_move():
     dtg_z.append(info['dtg_xyz'][2])
     reward.append(rew)
 
-    if info['success'][0]:
+    print('Score:{}'.format(score))
+    if info['success'][1]:
         print("successfully reached pose")
     else:
         print("Did not reach pose")

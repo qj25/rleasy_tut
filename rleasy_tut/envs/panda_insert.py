@@ -103,9 +103,9 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         # initialize viewer
         if self.do_render and self.viewer is None:
             self.viewer = mujoco_py.MjViewer(self.sim.sim)
-            self.viewer.cam.azimuth = 120
-            self.viewer.cam.distance = self.sim.model.stat.extent * 0.75 
-            self.viewer.cam.elevation = 0
+            self.viewer.cam.azimuth = 140
+            self.viewer.cam.distance = self.sim.model.stat.extent * 0.3 
+            self.viewer.cam.elevation = -20
 
         # initialize controller
         self.controller = HPFController(
@@ -156,9 +156,9 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
         if self.do_render and self.viewer is None:
             self.viewer = mujoco_py.MjViewer(self.sim.sim)
-            self.viewer.cam.azimuth = 120
-            self.viewer.cam.distance = self.sim.model.stat.extent * 0.75 
-            self.viewer.cam.elevation = 0
+            self.viewer.cam.azimuth = 140
+            self.viewer.cam.distance = self.sim.model.stat.extent * 0.3 
+            self.viewer.cam.elevation = -20
         
         # reset hole
         self.hole_pos_true = np.array([0.53, 0.08, 0.13])
@@ -269,7 +269,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
     def init_pos(self):
         targ_pos = self.hole_pos.copy()
-        targ_pos[2] = self.hole_top_z + 1e-3
+        targ_pos[2] = self.hole_top_z + 0.9e-3
         # added 1e-3 to ensure no collision 
         # due rotated pin during first move
         self.rob_rotxy_error = np.random.uniform(
@@ -293,8 +293,10 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             self.sim.forward()
             if self.do_render:
                 self.render()
-            done = self._check_proximity(
-                targ_pos, self.observations['eef_pos']
+            done = (
+                self._check_proximity(
+                    targ_pos, self.observations['eef_pos']
+                )
             )
             if step_counter > 10000:
                 break
@@ -340,7 +342,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         """
 
         # init variables
-        self.rob_rot_error_limit = 0.1
+        self.rob_rot_error_limit = 0.07
         # create observation and action spaces
         obs = self._get_observations()
         self.observation_space = spaces.Box(
