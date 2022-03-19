@@ -25,7 +25,7 @@ algo = 'ppo'    # ppo or dqn
 
 env_name = "PandaInsert-v1" # "CartPole-v1"
 env_name_full = "rleasy_tut:" + env_name
-time_steps_str = "1e5"
+time_steps_str = "1e5"  # change training time steps here
 time_steps_int = int(float(time_steps_str))
 
 # user inputs
@@ -79,7 +79,8 @@ elif learn_eval == 1:
         while not done:
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, info = env.step(action)
-            print(action)
+            print(f"Discrete action taken: {action}")
+            print(f"observation: {obs}")
             score += reward
         print('Episode:{} Score:{}'.format(episode,score))
 

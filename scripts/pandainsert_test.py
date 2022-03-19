@@ -1,3 +1,4 @@
+from cmath import pi
 import mujoco_py
 import matplotlib.pyplot as plt
 import numpy as np
@@ -34,6 +35,8 @@ def test_move():
     force_z = []
     dtg_z = []
     reward = []
+    moment_obs = []
+    tilt_obs = []
     score = 0
     rand_move = random.randint(0,4)
 
@@ -51,7 +54,7 @@ def test_move():
             else:
                 move_step = 1
         elif phase == 1:
-            move_step = rand_move # random.randint(0,4)
+            move_step = 2 # random.randint(0,4)
         obs, rew, done, info = env.step(move_step)
         rob_pos = info['rob_pos']
         score += rew
@@ -64,6 +67,8 @@ def test_move():
                 dist_to_goal.append(info['dist_norm'])
                 force_z.append(info['ft_world'][2])
                 dtg_z.append(info['dtg_xyz'][2])
+                moment_obs.append(obs[1:])
+                tilt_obs.append(info['rob_tilt'])
                 reward.append(rew)
                 print(f"---------- EPS_time = {info['eps_time']:7.3f} ----------")
                 # print(f"dist_to_goal = {info['dist_norm']}")
@@ -71,6 +76,7 @@ def test_move():
                 # print(f"dtg_xyz = {info['dtg_xyz']}")
                 print(f"move_step = {move_step}")
                 print(f"rob_pos = {rob_pos}")
+                print(f"rob_tilt = {info['rob_tilt']}")
                 # print(f"obs.type = {type(env.observation_space)}")
                 # print(f"qpos = {env.observations['qpos']}")
                 print(f"force-z = {info['ft_world'][2]}")
@@ -82,6 +88,10 @@ def test_move():
     dist_to_goal.append(info['dist_norm'])
     force_z.append(info['ft_world'][2])
     dtg_z.append(info['dtg_xyz'][2])
+    moment_obs.append(obs[1:])
+    moment_obs = np.array(moment_obs)
+    tilt_obs.append(info['rob_tilt'])
+    tilt_obs = np.array(tilt_obs)
     reward.append(rew)
 
     print('Score:{}'.format(score))
@@ -91,17 +101,41 @@ def test_move():
         print("Did not reach pose")
 
     # plotting
-    plt.figure("Z displacement against Time")
-    plt.plot(eps_time, dtg_z)
-    plt.legend(["dtg_z"])
-    plt.ylabel('Depth')
+    # plt.figure("Z displacement against Time")
+    # plt.plot(eps_time, dtg_z)
+    # plt.legend(["dtg_z"])
+    # plt.ylabel('Depth')
+    # plt.xlabel('Time')
+    # plt.grid()
+
+    # plt.figure("Reward against Time")
+    # plt.plot(eps_time, reward)
+    # plt.legend(["rew"])
+    # plt.ylabel('Reward')
+    # plt.xlabel('Time')
+    # plt.grid()
+
+    plt.figure("Z force against Time")
+    plt.plot(eps_time, force_z)
+    plt.legend(["force_z"])
+    plt.ylabel('Force')
     plt.xlabel('Time')
     plt.grid()
 
-    plt.figure("Reward against Time")
-    plt.plot(eps_time, reward)
-    plt.legend(["rew"])
-    plt.ylabel('Reward')
+    plt.figure("Moment against Time")
+    plt.plot(eps_time, moment_obs[:,0])
+    plt.plot(eps_time, moment_obs[:,1])
+    plt.legend(["x-moment", "y-moment"])
+    plt.ylabel('Moment')
+    plt.xlabel('Time')
+    plt.grid()
+
+    plt.figure("Tilt against Time")
+    plt.plot(eps_time, tilt_obs[:,0] - pi)
+    plt.plot(eps_time, tilt_obs[:,2])
+    plt.plot(eps_time, tilt_obs[:,1])
+    plt.legend(["x-tilt", "y-tilt", "z-tilt"])
+    plt.ylabel('Tilt')
     plt.xlabel('Time')
     plt.grid()
 

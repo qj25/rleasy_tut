@@ -36,6 +36,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         self,
         do_render=False,
         xml_string=None,
+        rot_action=1,
     ):
         """
         General:
@@ -53,6 +54,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         # self.model = None
         self.sim = None
         self.do_render = do_render
+        self.rot_action = rot_action # 0 - absolute rot, 1 - relative rot
 
         # init obs
         self.observations = dict(
@@ -111,6 +113,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         self.controller = HPFController(
             self.sim,
             actuator_names=self.model.actuator_names,
+            rot_action=self.rot_action,
             eef_name="cylinder1",
             eef_site_name="cyl_top_site",
         )
@@ -143,13 +146,20 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             self.observations["eef_quat"],
         )
         self.observations["eef_pose_hf"] = np.concatenate((eef_p_hf, eef_q_hf))
+        # return self.observations["ft_world"][2:5]
         return np.concatenate(
             (
-                [0, 0],
+                [self.observations["eef_pos"][2]],
                 self.observations["ft_world"][2:5],
-                [0, 0],
             )
         )
+        # return np.concatenate(
+        #     (
+        #         [0, 0],
+        #         self.observations["ft_world"][2:5],
+        #         [0, 0],
+        #     )
+        # )
 
     def reset(self):
         self.sim.reset()
@@ -262,6 +272,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             dist_norm=np.linalg.norm(self.dist_to_goal),
             dtg_xyz=self.dist_to_goal,
             rob_pos=self.observations['eef_pos'],
+            rob_tilt=T.quat2axisangle(self.observations['eef_quat']),
             ft_world=self.observations['ft_world']
         )
 
@@ -302,14 +313,17 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
                 break
             self._get_observations()
         if not done:
-            raise RuntimeError('Failed to reach move down position!')
+            # reset rand error if failed to reach start pose
+            self.init_pos() 
+            # raise RuntimeError('Failed to reach move down position!')
         
         done = False
         while not done:
             step_counter += 1
             move_step = self.decode_action(0)
+            move_step[3] += np.pi # account for initial rotated position
             move_step[3:] += self.rob_rotxy_error 
-            self.controller.set_goal(move_step)
+            self.controller.set_goal(move_step, rot_abs=True)
             tau_cmd = self.controller.compute_torque_cmd()
             self.controller.set_torque_cmd(tau_cmd)
             self.sim.step()
@@ -324,7 +338,8 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
                 break
             self._get_observations()
         if not done:
-            raise RuntimeError('Failed to reach init_pos!')
+            self.init_pos()
+            # raise RuntimeError('Failed to reach init_pos!')
 
     def init_insertion_phase(self):
         """
@@ -358,6 +373,8 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         """
         Fd = 20.0
         Rd = self.rob_rot_error_limit
+        if self.rot_action == 1:
+            Rd /= 2   # reduce magnitude of tilt action
         actions_list = np.array([
             [0., 0., -Fd, 0., 0.],
             [0., 0., -Fd, Rd, 0.],
@@ -366,6 +383,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             [0., 0., -Fd, 0., -Rd],
         ])
         decoded_act = actions_list[action]
-        decoded_act[3] += np.pi # account for initial rotated position
+        if self.rot_action == 0:
+            decoded_act[3] += np.pi # account for initial rotated position
         decoded_act[:3] *= -1
         return decoded_act
