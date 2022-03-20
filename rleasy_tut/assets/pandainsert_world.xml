@@ -104,7 +104,9 @@
                         <inertial diaginertia="0.05 0.05 0.05" mass="0.5" pos="0 0 0" />
 
                         <camera fovy="75" mode="fixed" name="eye_in_hand" pos="0.05 0 0" quat="0 0.707108 0.707108 0" />
-                        
+                        <body name="box1" pos="0.0 0.0 0.0355">
+                          <geom euler="0 0 0" friction="0.05 0.05 0.001" group="1" mass="0.2558" pos="0 0 0" priority="1" size="0.017490 0.017490 0.0355" solimp="0.9 0.95 0.001 0.5 2" solref="0.02 1" type="box" />
+                        </body>
                         <body name="cylinder1" pos="0.0 0.0 0.101">
                           <geom euler="0 0 0" friction="0.05 0.05 0.001" group="1" mass="0.6790" pos="0 0 0" priority="1" size="0.017490 0.03" solimp="0.9 0.95 0.001 0.5 2" solref="0.02 1" type="cylinder" />
                           <site name="cyl_bottom_site" pos="0 0 -0.03" rgba="0 0 0 0" size="0.001" />
