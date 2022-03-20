@@ -108,12 +108,12 @@ def test_move():
     plt.xlabel('Time')
     plt.grid()
 
-    # plt.figure("Reward against Time")
-    # plt.plot(eps_time, reward)
-    # plt.legend(["rew"])
-    # plt.ylabel('Reward')
-    # plt.xlabel('Time')
-    # plt.grid()
+    plt.figure("Reward against Time")
+    plt.plot(eps_time, reward)
+    plt.legend(["rew"])
+    plt.ylabel('Reward')
+    plt.xlabel('Time')
+    plt.grid()
 
     plt.figure("Z force against Time")
     plt.plot(eps_time, force_z)

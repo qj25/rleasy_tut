@@ -25,7 +25,7 @@ algo = 'ppo'    # ppo or dqn
 
 env_name = "PandaInsert-v1" # "CartPole-v1"
 env_name_full = "rleasy_tut:" + env_name
-time_steps_str = "1e5"  # change training time steps here
+time_steps_str = "5e4"  # change training time steps here
 time_steps_int = int(float(time_steps_str))
 
 # user inputs

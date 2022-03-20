@@ -120,7 +120,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
         # other variables
         self.insert_done = False
-        self.max_env_steps = 100
+        self.max_env_steps = 1000
         self.env_steps = 0
         self.cur_time = 0
         self.dt = self.sim.model.opt.timestep
@@ -211,22 +211,22 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         rew = 0
         # rew for distance and rounding
         self.dist_to_goal = self.observations["eef_pose_hf"][:3].copy()            
-        Z = self.final_depth - self.first_depth
+        Z = self.final_depth - self.new_first_depth
         curr_depth = (
             self.hole_top_z 
             - self.observations['eef_pos'][2]
-            - self.first_depth
+            - self.new_first_depth
         )
         rew = (Z - curr_depth) / Z
         rew = - 1000 ** (rew - 1)
 
-        rew = np.clip(rew, -1, 0)
-        if rew <= -1:
+        rew = np.clip(rew, -1.1, 0)
+        if rew <= -1.1:
             rew = -100.
         # reward for successful run
-        # rew_success = 100 * (1.0 - self.env_steps / self.max_env_steps)
-        # if self.search_done or self.insert_done:
-        #     rew = rew_success
+        rew_success = 100 * (1.0 - self.env_steps / self.max_env_steps)
+        if self.search_done or self.insert_done:
+            rew = rew_success
         return rew
 
     def _check_proximity(self, pos1, pos2):
@@ -264,7 +264,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
         # reward (comes after check done to check success)
         reward = self.reward()
-        if reward <= -1: # exited safe boundary
+        if reward <= -1.1: # exited safe boundary
             done = True
 
         # additional information
@@ -333,7 +333,6 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             self.sim.forward()
             if self.do_render:
                 self.render()
-            print(20 - self.observations['ft_world'][2])
             if (
                 ((self.hole_top_z - self.observations['eef_pos'][2])
                 > self.first_depth)
@@ -343,9 +342,6 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
                 self.new_first_depth = (
                     self.hole_top_z - self.observations['eef_pos'][2]
                 )
-                print(self.new_first_depth)
-                print(self.first_depth)
-                input()
             if (
             self.hole_top_z - self.observations['eef_pos'][2] 
             > self.final_depth
