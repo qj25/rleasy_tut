@@ -101,12 +101,12 @@ def test_move():
         print("Did not reach pose")
 
     # plotting
-    # plt.figure("Z displacement against Time")
-    # plt.plot(eps_time, dtg_z)
-    # plt.legend(["dtg_z"])
-    # plt.ylabel('Depth')
-    # plt.xlabel('Time')
-    # plt.grid()
+    plt.figure("Z displacement against Time")
+    plt.plot(eps_time, dtg_z)
+    plt.legend(["dtg_z"])
+    plt.ylabel('Depth')
+    plt.xlabel('Time')
+    plt.grid()
 
     # plt.figure("Reward against Time")
     # plt.plot(eps_time, reward)

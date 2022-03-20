@@ -120,7 +120,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
         # other variables
         self.insert_done = False
-        self.max_env_steps = 1000
+        self.max_env_steps = 100
         self.env_steps = 0
         self.cur_time = 0
         self.dt = self.sim.model.opt.timestep
@@ -145,7 +145,9 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             self.observations["eef_pos"],
             self.observations["eef_quat"],
         )
-        self.observations["eef_pose_hf"] = np.concatenate((eef_p_hf, eef_q_hf))
+        self.observations["eef_pose_hf"] = np.concatenate(
+            (eef_p_hf, eef_q_hf)
+        )
         # return self.observations["ft_world"][2:5]
         return np.concatenate(
             (
@@ -215,15 +217,16 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             - self.observations['eef_pos'][2]
             - self.first_depth
         )
-        rew = - (Z - curr_depth) / Z
+        rew = (Z - curr_depth) / Z
+        rew = - 1000 ** (rew - 1)
 
         rew = np.clip(rew, -1, 0)
         if rew <= -1:
             rew = -100.
         # reward for successful run
-        rew_success = 100 * (1.0 - self.env_steps / self.max_env_steps)
-        if self.search_done or self.insert_done:
-            rew = rew_success
+        # rew_success = 100 * (1.0 - self.env_steps / self.max_env_steps)
+        # if self.search_done or self.insert_done:
+        #     rew = rew_success
         return rew
 
     def _check_proximity(self, pos1, pos2):
@@ -330,15 +333,32 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             self.sim.forward()
             if self.do_render:
                 self.render()
-            done = (
-                (self.hole_top_z - self.observations['eef_pos'][2])
-                > self.first_depth
-            )
+            print(20 - self.observations['ft_world'][2])
+            if (
+                ((self.hole_top_z - self.observations['eef_pos'][2])
+                > self.first_depth)
+                and (20 - self.observations['ft_world'][2]) < 1e-1
+            ):
+                done = True
+                self.new_first_depth = (
+                    self.hole_top_z - self.observations['eef_pos'][2]
+                )
+                print(self.new_first_depth)
+                print(self.first_depth)
+                input()
+            if (
+            self.hole_top_z - self.observations['eef_pos'][2] 
+            > self.final_depth
+            ):
+                self.insert_done = True
+
             if step_counter > 10000:
                 break
             self._get_observations()
-        if not done:
-            self.init_pos()
+        if not done or self.insert_done:
+            self.reset()
+            # resert if fail to enter, 
+            # or entered all the way
             # raise RuntimeError('Failed to reach init_pos!')
 
     def init_insertion_phase(self):

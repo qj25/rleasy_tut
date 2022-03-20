@@ -81,6 +81,7 @@ elif learn_eval == 1:
             obs, reward, done, info = env.step(action)
             print(f"Discrete action taken: {action}")
             print(f"observation: {obs}")
+            print(f"reward = {reward}")
             score += reward
         print('Episode:{} Score:{}'.format(episode,score))
 
