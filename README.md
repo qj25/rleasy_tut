@@ -31,6 +31,6 @@ The following installations are required:
   '1' is the experiment id to be evaluated. Experiments can be found with their IDs at *rleasy_tut/exp/sb/Saved_Model/PandaInsert-v0*. If no ID is specified, the latest experiment will be evaluated. Experiment ID 1 has already been trained for evaluation.
 
 - To view logs:
-    1. cd to file where training log is in 'cd exp/sb/Logs/PandaInsert-v0/PPO_1
+    1. cd to file where training log is in 'cd exp/sb/Logs/PandaInsert-v1/PPO_1
     2. cmd 'tensorboard --logdir=.'
-    3. access the tensorboard link (e.g. 'http://localhost:6006/) through a browser
+    3. access the tensorboard link (e.g. 'http://localhost:6006/') through a browser
