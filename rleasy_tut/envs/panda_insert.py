@@ -1,21 +1,17 @@
 #!/usr/bin/env python3
 
-## Next:
-# -change action limit (or change to discrete)
-# -change action rot to velocity
+## No search phase implementation in this environment
+# try with 7k learning
+# reduce to 50 learn again --> add temporal context learn again
+# --> back to 100 learn again
 
-# -try learning search phase
-# -create new rew func for insertion phase
-# -2 learning on 1 model
+"""
+Next:
+- try changing obs (add temporal context)
+- try increasing action magnitude
+- try changing 'done' rewards
+"""
 
-## Rmb:
-# -conducting only search phase currently
-# -distance not rounded
-# -no hole offset
-# -penalize for being in env
-
-## Questions:
-# -rounding of c in paper
 
 import numpy as np
 import os
@@ -64,6 +60,10 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             eef_quat=np.zeros(4),
             eef_vel=np.zeros(7),
             ft_world=np.zeros(6),
+        )
+        self.past_obs = dict(
+            p_eef_quat=np.zeros(4),
+            p_ft_world=np.zeros(6),
         )
 
         # load model
@@ -131,6 +131,9 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
 
     def _get_observations(self):
+        self.past_obs["p_eef_quat"] = self.observations["eef_quat"]
+        self.past_obs["p_ft_world"] = self.observations["ft_world"]
+
         self.observations["eef_vel"] = self.controller.state["eef_vel"]
         self.observations["eef_pos"] = self.controller.state["eef_pos"]
         self.observations["eef_quat"] = self.controller.state["eef_quat"]
@@ -148,13 +151,26 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         self.observations["eef_pose_hf"] = np.concatenate(
             (eef_p_hf, eef_q_hf)
         )
+        
         # return self.observations["ft_world"][2:5]
+        p_rob_tilt = T.quat2axisangle(self.past_obs['p_eef_quat'])
+        rob_tilt = T.quat2axisangle(self.observations['eef_quat'])
         return np.concatenate(
             (
                 [self.observations["eef_pos"][2]],
-                self.observations["ft_world"][2:5],
+                [p_rob_tilt[0] - np.pi],
+                [p_rob_tilt[2]],
+                [rob_tilt[0] - np.pi],
+                [rob_tilt[2]],
             )
         )
+        # return np.concatenate(
+        #     (
+        #         [self.observations["eef_pos"][2]],
+        #         self.past_obs["p_ft_world"][2:5],
+        #         self.observations["ft_world"][2:5],
+        #     )
+        # )
         # return np.concatenate(
         #     (
         #         [0, 0],
@@ -191,6 +207,10 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             eef_quat=np.zeros(4),
             eef_vel=np.zeros(6),
             ft_world=np.zeros(6),
+        )
+        self.past_obs = dict(
+            p_eef_quat=np.zeros(4),
+            p_ft_world=np.zeros(6),
         )
         self.controller.reset()
 
@@ -390,7 +410,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         Fd = 20.0
         Rd = self.rob_rot_error_limit
         if self.rot_action == 1:
-            Rd /= 2   # reduce magnitude of tilt action
+            Rd *= 2   # reduce magnitude of tilt action
         actions_list = np.array([
             [0., 0., -Fd, 0., 0.],
             [0., 0., -Fd, Rd, 0.],

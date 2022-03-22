@@ -25,7 +25,7 @@ algo = 'ppo'    # ppo or dqn
 
 env_name = "PandaInsert-v1" # "CartPole-v1"
 env_name_full = "rleasy_tut:" + env_name
-time_steps_str = "5e4"  # change training time steps here
+time_steps_str = "7e3"  # change training time steps here
 time_steps_int = int(float(time_steps_str))
 
 # user inputs
@@ -53,7 +53,12 @@ if learn_eval == 0:
     env = DummyVecEnv([lambda: env])
     # Instantiate the agent
     if algo == 'ppo':
-        model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=log_path)
+        model = PPO(
+            'MlpPolicy',
+            env,
+            verbose=1,
+            tensorboard_log=log_path,
+        )
     elif algo == 'dqn':
         model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_path)
     # Train the agent

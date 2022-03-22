@@ -1,4 +1,3 @@
-from cmath import pi
 import mujoco_py
 import matplotlib.pyplot as plt
 import numpy as np
@@ -54,7 +53,7 @@ def test_move():
             else:
                 move_step = 1
         elif phase == 1:
-            move_step = 2 # random.randint(0,4)
+            move_step = 3 # random.randint(0,4)
         obs, rew, done, info = env.step(move_step)
         rob_pos = info['rob_pos']
         score += rew
@@ -131,7 +130,7 @@ def test_move():
     plt.grid()
 
     plt.figure("Tilt against Time")
-    plt.plot(eps_time, tilt_obs[:,0] - pi)
+    plt.plot(eps_time, tilt_obs[:,0] - np.pi)
     plt.plot(eps_time, tilt_obs[:,2])
     plt.plot(eps_time, tilt_obs[:,1])
     plt.legend(["x-tilt", "y-tilt", "z-tilt"])

@@ -99,6 +99,7 @@ class HPFController:
             action_ori = T.axisangle2quat(concat_axisangle)
             ori_action = T.quat_error(eef_quat, action_ori)
         elif self.rot_action == 1:
+            # self._q0 = self._state['eef_quat']
             concat_axisangle = np.concatenate((
                 action[3:], [0]
             ))
