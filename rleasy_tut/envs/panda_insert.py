@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ## No search phase implementation in this environment
-# try with 7k learning
+# reduce action mag --> try with no reward for completion
 # reduce to 50 learn again --> add temporal context learn again
 # --> back to 100 learn again
 
@@ -220,6 +220,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
 
         self.search_done = False
         self.insert_done = False
+        self.new_first_depth = 0.
         self.init_pos()
 
         return self._get_observations()
@@ -241,7 +242,7 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         rew = - 1000 ** (rew - 1)
 
         rew = np.clip(rew, -1.1, 0)
-        if rew <= -1.1:
+        if rew <= -1.1 or (self.env_steps >= self.max_env_steps):
             rew = -100.
         # reward for successful run
         rew_success = 100 * (1.0 - self.env_steps / self.max_env_steps)
@@ -408,9 +409,11 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         for controller to process.
         """
         Fd = 20.0
+        # if self.new_first_depth != 0:
+        #     Fd = 0.
         Rd = self.rob_rot_error_limit
         if self.rot_action == 1:
-            Rd *= 2   # reduce magnitude of tilt action
+            Rd *= 0.5   # reduce magnitude of tilt action
         actions_list = np.array([
             [0., 0., -Fd, 0., 0.],
             [0., 0., -Fd, Rd, 0.],

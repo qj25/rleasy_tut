@@ -1,10 +1,15 @@
 import sys
 import os
 import gym
+import matplotlib.pyplot as plt
 
+from stable_baselines3.common import results_plotter
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.results_plotter import plot_results
 from stable_baselines3 import PPO, DQN
 from stable_baselines3.common.vec_env import DummyVecEnv
 from cur_id import exp_id_up, exp_id_get
+from rleasy_tut.utils.callback import SaveOnBestTrainingRewardCallback
 
 arg_input = sys.argv[1:]
 if len(arg_input) == 0:
@@ -25,7 +30,7 @@ algo = 'ppo'    # ppo or dqn
 
 env_name = "PandaInsert-v1" # "CartPole-v1"
 env_name_full = "rleasy_tut:" + env_name
-time_steps_str = "7e3"  # change training time steps here
+time_steps_str = "1e5"  # change training time steps here
 time_steps_int = int(float(time_steps_str))
 
 # user inputs
@@ -48,6 +53,8 @@ model_path = os.path.join(model_path, model_name)
 
 # Create environment
 env = gym.make(env_name_full)
+env = Monitor(env, log_path)
+callback = SaveOnBestTrainingRewardCallback(check_freq=1000, log_dir=log_path)
 
 if learn_eval == 0:
     env = DummyVecEnv([lambda: env])
@@ -62,10 +69,19 @@ if learn_eval == 0:
     elif algo == 'dqn':
         model = DQN('MlpPolicy', env, verbose=1, tensorboard_log=log_path)
     # Train the agent
-    model.learn(total_timesteps=int(time_steps_int))
+    model.learn(
+        total_timesteps=int(time_steps_int),
+        callback=callback
+    )
     # Save the agent
     model.save(model_path)
     # del model  # delete trained model to demonstrate loading
+    plot_results(
+        [log_path],
+        time_steps_int,
+        results_plotter.X_TIMESTEPS,
+        "PPO PandaInsert")
+    plt.show()
 
 elif learn_eval == 1:
     # Load the trained agent

@@ -1,6 +1,7 @@
 import mujoco_py
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 import gym
 import random
 
@@ -53,12 +54,11 @@ def test_move():
             else:
                 move_step = 1
         elif phase == 1:
-            move_step = 3 # random.randint(0,4)
+            # move_step = math.floor(step_counter / 40) % 5 
+            move_step = 1 # random.randint(0,4)
         obs, rew, done, info = env.step(move_step)
         rob_pos = info['rob_pos']
         score += rew
-        if step_counter == 30:
-            pass
         if step_counter % 3 == 0:
             # input()
             if plot_dat:
@@ -66,12 +66,12 @@ def test_move():
                 dist_to_goal.append(info['dist_norm'])
                 force_z.append(info['ft_world'][2])
                 dtg_z.append(info['dtg_xyz'][2])
-                moment_obs.append(obs[1:])
+                moment_obs.append(info['ft_world'][3:])
                 tilt_obs.append(info['rob_tilt'])
                 reward.append(rew)
                 print(f"---------- EPS_time = {info['eps_time']:7.3f} ----------")
                 # print(f"dist_to_goal = {info['dist_norm']}")
-                # print(f"reward = {rew}")
+                print(f"reward = {rew}")
                 # print(f"dtg_xyz = {info['dtg_xyz']}")
                 print(f"move_step = {move_step}")
                 print(f"rob_pos = {rob_pos}")
@@ -87,7 +87,7 @@ def test_move():
     dist_to_goal.append(info['dist_norm'])
     force_z.append(info['ft_world'][2])
     dtg_z.append(info['dtg_xyz'][2])
-    moment_obs.append(obs[1:])
+    moment_obs.append(info['ft_world'][3:])
     moment_obs = np.array(moment_obs)
     tilt_obs.append(info['rob_tilt'])
     tilt_obs = np.array(tilt_obs)
