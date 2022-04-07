@@ -30,7 +30,7 @@ algo = 'ppo'    # ppo or dqn
 
 env_name = "PandaInsert-v1" # "CartPole-v1"
 env_name_full = "rleasy_tut:" + env_name
-time_steps_str = "1e5"  # change training time steps here
+time_steps_str = "1e6"  # change training time steps here
 time_steps_int = int(float(time_steps_str))
 
 # user inputs
@@ -39,13 +39,18 @@ if learn_eval == 0:
     cur_exp_id = exp_id_up()
 elif learn_eval == 1:
     cur_exp_id = exp_id_get()
+    check_best = True
     if exp_id != '0':
         cur_exp_id = exp_id
+        check_best = False
+    else:
+        print('Evaluating best model...')
 
 # Define save locations
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EXP_PATH = os.path.join(parent_dir, "exp", "sb")
 log_path = os.path.join(EXP_PATH, 'Logs', env_name)
+bestmodel_path = os.path.join(log_path, 'best_model.zip')
 model_path = os.path.join(EXP_PATH, 'Saved_Models', env_name)
 model_name = algo + "_" + cur_exp_id \
   + "_" + env_name + "_" + time_steps_str
@@ -63,6 +68,8 @@ if learn_eval == 0:
         model = PPO(
             'MlpPolicy',
             env,
+            learning_rate=8e-4,
+            ent_coef=1e-3,
             verbose=1,
             tensorboard_log=log_path,
         )
@@ -86,13 +93,16 @@ if learn_eval == 0:
 elif learn_eval == 1:
     # Load the trained agent
     if algo == 'ppo':
-        model = PPO.load(model_path, env=env)
+        if check_best == False:
+            model = PPO.load(model_path, env=env)
+        else:
+            model = PPO.load(bestmodel_path, env=env)
     elif algo == 'dqn':
         model = DQN.load(model_path, env=env)
     env = env.env
     episodes = 5
     for episode in range(1, episodes+1):
-        env.do_render = True
+        env.unwrapped.do_render = True
         obs = env.reset()
         done = False
         score = 0

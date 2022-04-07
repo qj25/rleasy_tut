@@ -152,14 +152,17 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
             (eef_p_hf, eef_q_hf)
         )
         
-        # return self.observations["ft_world"][2:5]
         p_rob_tilt = T.quat2axisangle(self.past_obs['p_eef_quat'])
         rob_tilt = T.quat2axisangle(self.observations['eef_quat'])
+
+        # Testing different observations
+
+        # return self.observations["ft_world"][2:5]
         return np.concatenate(
             (
                 [self.observations["eef_pos"][2]],
-                [p_rob_tilt[0] - np.pi],
-                [p_rob_tilt[2]],
+                # [p_rob_tilt[0] - np.pi],
+                # [p_rob_tilt[2]],
                 [rob_tilt[0] - np.pi],
                 [rob_tilt[2]],
             )
@@ -167,15 +170,14 @@ class PandaInsertEnv(gym.Env, utils.EzPickle):
         # return np.concatenate(
         #     (
         #         [self.observations["eef_pos"][2]],
-        #         self.past_obs["p_ft_world"][2:5],
+        #         # self.past_obs["p_ft_world"][2:5],
         #         self.observations["ft_world"][2:5],
         #     )
         # )
         # return np.concatenate(
         #     (
-        #         [0, 0],
+        #         [self.observations["eef_pos"][2]],
         #         self.observations["ft_world"][2:5],
-        #         [0, 0],
         #     )
         # )
 
