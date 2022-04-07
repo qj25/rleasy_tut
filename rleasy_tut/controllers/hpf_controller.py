@@ -8,6 +8,7 @@ class HPFController:
         self,
         sim,
         actuator_names,
+        rot_action=0,
         eef_name="capsule1",
         eef_site_name="cap_top_site",
         kp=150,
@@ -17,6 +18,9 @@ class HPFController:
         ramp_ratio=0.8,
     ):
         self.sim = sim
+
+        # define type of action for rotation
+        self.rot_action = rot_action
 
         # time
         self.ramp_ratio = 0.8
@@ -66,7 +70,7 @@ class HPFController:
         self._fd = self._state['ft_world'][:3]
         self.steps = 0
 
-    def set_goal(self, action, pose_cmd=False):
+    def set_goal(self, action, pose_cmd=False, rot_abs=False):
         self.steps = 0
         # pos
         if pose_cmd:
@@ -80,14 +84,26 @@ class HPFController:
         # quat
         self._q0 = self._qd
         eef_quat = self._state['eef_quat']
-        concat_axisangle = np.concatenate((
-            [action[3]], [0]
-        ))
-        concat_axisangle = np.concatenate((
-            concat_axisangle, [action[4]]
-        ))
-        action_ori = T.axisangle2quat(concat_axisangle)
-        ori_action = T.quat_error(eef_quat, action_ori)
+        
+        if (
+            self.rot_action == 0 
+            or pose_cmd == True
+            or rot_abs == True
+        ):
+            concat_axisangle = np.concatenate((
+                [action[3]], [0]
+            ))
+            concat_axisangle = np.concatenate((
+                concat_axisangle, [action[4]]
+            ))
+            action_ori = T.axisangle2quat(concat_axisangle)
+            ori_action = T.quat_error(eef_quat, action_ori)
+        elif self.rot_action == 1:
+            # self._q0 = self._state['eef_quat']
+            concat_axisangle = np.concatenate((
+                action[3:], [0]
+            ))
+            ori_action = concat_axisangle
         # ori_action = np.concatenate((action[3:], [0]))
         scaled_ori_a = self.scale_action(ori_action, out_max=0.015)
         scaled_quat_a = T.axisangle2quat(scaled_ori_a)

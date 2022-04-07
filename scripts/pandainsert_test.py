@@ -1,6 +1,7 @@
 import mujoco_py
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 import gym
 import random
 
@@ -34,6 +35,8 @@ def test_move():
     force_z = []
     dtg_z = []
     reward = []
+    moment_obs = []
+    tilt_obs = []
     score = 0
     rand_move = random.randint(0,4)
 
@@ -51,12 +54,11 @@ def test_move():
             else:
                 move_step = 1
         elif phase == 1:
-            move_step = rand_move # random.randint(0,4)
+            # move_step = math.floor(step_counter / 40) % 5 
+            move_step = 1 # random.randint(0,4)
         obs, rew, done, info = env.step(move_step)
         rob_pos = info['rob_pos']
         score += rew
-        if step_counter == 30:
-            pass
         if step_counter % 3 == 0:
             # input()
             if plot_dat:
@@ -64,13 +66,16 @@ def test_move():
                 dist_to_goal.append(info['dist_norm'])
                 force_z.append(info['ft_world'][2])
                 dtg_z.append(info['dtg_xyz'][2])
+                moment_obs.append(info['ft_world'][3:])
+                tilt_obs.append(info['rob_tilt'])
                 reward.append(rew)
                 print(f"---------- EPS_time = {info['eps_time']:7.3f} ----------")
                 # print(f"dist_to_goal = {info['dist_norm']}")
-                # print(f"reward = {rew}")
+                print(f"reward = {rew}")
                 # print(f"dtg_xyz = {info['dtg_xyz']}")
                 print(f"move_step = {move_step}")
                 print(f"rob_pos = {rob_pos}")
+                print(f"rob_tilt = {info['rob_tilt']}")
                 # print(f"obs.type = {type(env.observation_space)}")
                 # print(f"qpos = {env.observations['qpos']}")
                 print(f"force-z = {info['ft_world'][2]}")
@@ -82,6 +87,10 @@ def test_move():
     dist_to_goal.append(info['dist_norm'])
     force_z.append(info['ft_world'][2])
     dtg_z.append(info['dtg_xyz'][2])
+    moment_obs.append(info['ft_world'][3:])
+    moment_obs = np.array(moment_obs)
+    tilt_obs.append(info['rob_tilt'])
+    tilt_obs = np.array(tilt_obs)
     reward.append(rew)
 
     print('Score:{}'.format(score))
@@ -102,6 +111,30 @@ def test_move():
     plt.plot(eps_time, reward)
     plt.legend(["rew"])
     plt.ylabel('Reward')
+    plt.xlabel('Time')
+    plt.grid()
+
+    plt.figure("Z force against Time")
+    plt.plot(eps_time, force_z)
+    plt.legend(["force_z"])
+    plt.ylabel('Force')
+    plt.xlabel('Time')
+    plt.grid()
+
+    plt.figure("Moment against Time")
+    plt.plot(eps_time, moment_obs[:,0])
+    plt.plot(eps_time, moment_obs[:,1])
+    plt.legend(["x-moment", "y-moment"])
+    plt.ylabel('Moment')
+    plt.xlabel('Time')
+    plt.grid()
+
+    plt.figure("Tilt against Time")
+    plt.plot(eps_time, tilt_obs[:,0] - np.pi)
+    plt.plot(eps_time, tilt_obs[:,2])
+    plt.plot(eps_time, tilt_obs[:,1])
+    plt.legend(["x-tilt", "y-tilt", "z-tilt"])
+    plt.ylabel('Tilt')
     plt.xlabel('Time')
     plt.grid()
 
