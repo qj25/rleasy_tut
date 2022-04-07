@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
 
-## No search phase implementation in this environment
-# reduce action mag --> try with no reward for completion
-# reduce to 50 learn again --> add temporal context learn again
-# --> back to 100 learn again
-
-"""
-Next:
-- try changing obs (add temporal context)
-- try increasing action magnitude
-- try changing 'done' rewards
-"""
-
-
 import numpy as np
 import os
 import mujoco_py

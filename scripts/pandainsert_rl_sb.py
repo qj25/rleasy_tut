@@ -69,7 +69,7 @@ if learn_eval == 0:
             'MlpPolicy',
             env,
             learning_rate=8e-4,
-            ent_coef=1e-3,
+            # ent_coef=1e-3,
             verbose=1,
             tensorboard_log=log_path,
         )
@@ -83,6 +83,7 @@ if learn_eval == 0:
     # Save the agent
     model.save(model_path)
     # del model  # delete trained model to demonstrate loading
+    # Plot results
     plot_results(
         [log_path],
         time_steps_int,
@@ -110,6 +111,7 @@ elif learn_eval == 1:
         while not done:
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, info = env.step(action)
+            # Printing info for each timestep
             print(f"Discrete action taken: {action}")
             print(f"observation: {obs}")
             print(f"reward = {reward}")

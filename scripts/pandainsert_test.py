@@ -1,7 +1,5 @@
-import mujoco_py
 import matplotlib.pyplot as plt
 import numpy as np
-import math
 import gym
 import random
 
@@ -69,6 +67,7 @@ def test_move():
                 moment_obs.append(info['ft_world'][3:])
                 tilt_obs.append(info['rob_tilt'])
                 reward.append(rew)
+                # Printing info for each timestep
                 print(f"---------- EPS_time = {info['eps_time']:7.3f} ----------")
                 # print(f"dist_to_goal = {info['dist_norm']}")
                 print(f"reward = {rew}")
